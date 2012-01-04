@@ -2,23 +2,16 @@ package yaxuna;
 
 import java.util.HashMap;
 
-/**
- * @author Samuel
- *
- */
-/**
- * @author Samuel
- *
- */
-/**
- * @author Samuel
- *
- */
+import yaxuna.util.StringUtil;
+
 /**
  * @author Samuel
  *
  */
 public class XMLNode extends AbstractXMLList<XMLNode> {
+	
+	// TODO may later this class could be extended by differnt node types 
+
 	/**
 	 * The node name (tag name)
 	 */
@@ -62,52 +55,99 @@ public class XMLNode extends AbstractXMLList<XMLNode> {
 	 */
 	public XMLNode parentNode;
 	
+	/** 
+	 * XMLNode of type tag
+	 */
+	private final short NODE_TYPE_TAG = 0;
+
+	/** 
+	 * XMLNode of type text
+	 */
+	private final short NODE_TYPE_TEXT = 1;
+
+	/** 
+	 * XMLNode of type CDATA-section
+	 */
+	private final short NODE_TYPE_CDATASECTION = 2;
+	
+	/** 
+	 * XMLNode of type comment
+	 */
+	private final short NODE_TYPE_COMMENT = 3;
+
+	/** 
+	 * XMLNode of type comment
+	 */
+	private final short NODE_TYPE_PROCESSINSTRUCTION = 4;	
 	
 	/**
 	 * string wrapper for start nodes
 	 */
-	private final static String wrapStartNode = "<%s%s>";                 // tagname + attributes
-	private final static String wrapEmptyNode = "<%s%s/>";                // tagname + attributes
-	private final static String wrapProcessingInstruction = "<?%s%s?>";   // tagname + attributes
-	private final static String wrapCDATA = "<![CDATA[%s]]>";             // cdata content
-	private final static String wrapComment = "<!--%s-->";                // the comments content
+	private final String wrapStartNode = "<%s%s>";                 // tagname + attributes
 	
+	/**
+	 * string wrapper for empty nodes 
+	 */
+	private final String wrapEmptyNode = "<%s%s/>";                // tagname + attributes
+
+	/**
+	 * string wrapper for end nodes 
+	 */
+	private final String wrapEndNode = "</%s>";                    // tagname
+
+	/**
+	 * string wrapper for processing instructions
+	 */
+	private final String wrapProcessingInstruction = "<?%s%s?>";   // tagname + attributes
+
+	/**
+	 * string wrapper for cdata sections
+	 */
+	private final String wrapCDATA = "<![CDATA[%s]]>";             // cdata content
+
+	/**
+	 * string wrapper for comments
+	 */
+	private final String wrapComment = "<!--%s-->";                // the comments content
+
 	/**
 	 * @return Returns the start text o a tag or the whole node text content (empty tags, comments, CDDATA sections)
 	 */
 	public String startText () {
 		String attributesString = "";
-		for( String el : this.attributes ) {
-			var attr = this.attributes.get( el );
-			attributesString+= (' ' + attr.name + '="' + yaxuna.XML.encodeXMLAttribute( attr.value ) + '"');
+		
+		for( XMLAttribute attribute : this.attributes.values() ) {
+			attributesString += " "+attribute.toXMLString();
 		}
-		if(	this.type == yaxuna.NODE_TYPE_TAG ) {
-			if( this.childNodes.length ) {
-				return wrapStartNode( this.name , attributesString );
+		if(	this.type == this.NODE_TYPE_TAG ) {
+			if( this.childNodes.size() > 0 ) {
+				return String.format( this.wrapStartNode, this.name , attributesString );
 			} else {
-				return wrapEmptyNode( this.name , attributesString );
+				return String.format( this.wrapEmptyNode, this.name , attributesString );
 			}
-		} else if ( this.type == yaxuna.NODE_TYPE_TEXT ) {
-			return (this.text) ? yaxuna.XML.encodeXMLText( this.text ) : "";
-		} else if ( this.type == yaxuna.NODE_TYPE_CDATASECTION ) {
-			return wrapCDATA( (this.text) ? this.text : "" );
-		} else if ( this.type == yaxuna.NODE_TYPE_COMMENT ) {
-			return wrapComment( (this.text) ? this.text : "" );
-		} else if ( this.type == yaxuna.NODE_TYPE_PROCESSINSTRUCTION ) {
-			return wrapPI( this.name , attributesString );
+		} else if ( this.type == this.NODE_TYPE_TEXT ) {
+			return ( this.text != null ) ? StringUtil.escapeXml( this.text ) : "";
+		} else if ( this.type == this.NODE_TYPE_CDATASECTION ) {
+			String cddataText = StringUtil.escapeXmlCData( this.text != null  ? this.text : "" );
+			return String.format( this.wrapCDATA, cddataText );
+		} else if ( this.type == this.NODE_TYPE_COMMENT ) {
+			String commentText = StringUtil.escapeXmlComment( this.text != null  ? this.text : "" );
+			return String.format( wrapComment, commentText );
+		} else if ( this.type == this.NODE_TYPE_PROCESSINSTRUCTION ) {
+			return String.format( this.wrapProcessingInstruction, this.name , attributesString );
 		}
-	},
+		return null;
+	}
 	
 	/**
 	 * @return Returns the end text of a closing tag 
 	 */
 	public String endText () {
-		var wrapEndNode = function( name ) { return '</'+name+'>' };
-		if(	this.type == yaxuna.NODE_TYPE_TAG ) {
-			if( this.childNodes.length ) {
-				return wrapEndNode( this.name )
+		if(	this.type == this.NODE_TYPE_TAG ) {
+			if( this.childNodes.size() > 0 ) {
+				return String.format( wrapEndNode, this.name );
 			}
 		}
-		return undefined;
+		return null;
 	}
 }

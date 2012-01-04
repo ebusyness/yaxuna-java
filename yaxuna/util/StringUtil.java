@@ -5,36 +5,16 @@ package yaxuna.util;
 
 import java.lang.StringBuffer;
 
-public final class StringUtil {
+public class StringUtil {
 	
-	/**
-	 * String encoding type XML.
-	 */
-	public static final short ENCODE_TYPE_XML = 1;
-	
-	
-	/**
-	 * Convert a given string to an encoded string according to the selected encoding type.
-	 * @param str String To encode
-	 * @param encType Encoding type  
-	 * @return The encoded String
-	 */
-	public static String encode( String str, short encType ) {
-		if( encType == StringUtil.ENCODE_TYPE_XML ) {
-			return StringUtil.escapeXml( str );
-		}
-		return str;
-	}
-
 	/**
 	 * Convert a given string to an encoded xml string. (Replaces < > " ' & with their entities)
-	 * @param str String To encode
-	 * @param encType Encoding type  
+	 * @param str String to escape
 	 * @return The encoded String
 	 */
 	public static String escapeXml( String str ) {
 		if ( str == null ) {
-			return null;
+			return str;
 		}
 
 		int len = str.length();
@@ -65,5 +45,33 @@ public final class StringUtil {
 		return encodedBuffer.toString();
 	}
 
-	// escapeXmlCData
+	/**
+	 * Convert a given string to an encoded xml CDATA section string. This replaces ]]> with ]]]]><![CDATA[>. So we have to two CDData section.
+	 * @param str String to escape
+	 * @return The encoded String
+	 */
+	public static String escapeXmlCData( String str ) {
+		if ( str == null ) {
+			return str;
+		}
+		return str.replace("\\]\\]>", "]]]]><![CDATA[>");
+	}
+	
+	/**
+	 * Convert a given string to an encoded xml comment section string. If necessary, internal occurrences of "--" will be replaced with "- -" and a leading and/or trailing space will be added to the string.
+	 * @param str String to escape
+	 * @return The encoded String
+	 */
+	public static String escapeXmlComment( String str ) {
+		if ( str == null ) {
+			return str;
+		}
+		if( str.charAt( 0 ) == "-".charAt(0) ) {
+			str += " "+str;
+		}
+		if( str.charAt( str.length() ) == "-".charAt(0) ) {
+			str += str+" ";
+		}
+		return str.replace("--", "- -");
+	}
 }

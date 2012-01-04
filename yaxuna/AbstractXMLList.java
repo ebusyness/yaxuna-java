@@ -7,7 +7,6 @@ public abstract class AbstractXMLList<XMLNodeType extends AbstractXMLList> {
 	
 	/** 
 	 * ArrayList of <XMLNodeType> instances (childs)
-	 * @type Array
 	 */
 	public ArrayList<XMLNodeType> childNodes;
 	
@@ -21,7 +20,7 @@ public abstract class AbstractXMLList<XMLNodeType extends AbstractXMLList> {
 	
 	/** 
 	 * Adds an yaxuna.XMLNodeType
-	 * @param {yaxuna.XMLNodeType} node The Node to add
+	 * @param node The Node to add
 	 */
 	public void appendChild ( XMLNodeType node ) {
 		// TODO hierarchy check -> it shouldn't be possible to add a parent to a child

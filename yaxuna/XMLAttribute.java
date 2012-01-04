@@ -1,5 +1,7 @@
 package yaxuna;
 
+import yaxuna.util.StringUtil;
+
 public class XMLAttribute {
 	
 	/**
@@ -18,21 +20,19 @@ public class XMLAttribute {
 	 * @param inputValue String value of the attribute
 	 */
 	public XMLAttribute( String inputName, String inputValue ) {
+		// this framework is a lightwight & lazy tool - so attributes names are not validated
 		this.name = inputName;
 		this.value = inputValue;
 	}
 	
-	public String toString() {
-		return this.name + "\"" + this.value + "\"";
-	}
-	
+	/**
+	 * converts the attributes name and value to an XML Attribute String e.g. name="myName" 
+	 * @return
+	 */
 	public String toXMLString() {
-		String xmlValue = this.value;
-		xmlValue = xmlValue.replaceAll( "/<|>|&|\"/g" , this.getReplacement ) 
+		String xmlValue = StringUtil.escapeXml( this.value );
 		return this.name + "\"" + xmlValue + "\"";
 	}
 	
-	private String getReplacement() {
-		return "";
-	}
 }
+
