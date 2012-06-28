@@ -13,16 +13,16 @@ public class XMLAttribute {
 	 * The Attribute value
 	 */	
 	public String value;
-
+	
 	/**
 	 * Constructs an XMLAttribute
 	 * @param inputName The attribute name
 	 * @param inputValue String value of the attribute
 	 */
-	public XMLAttribute( String inputName, String inputValue ) {
+	public XMLAttribute( String name, String value ) {
 		// this framework is a lightwight & lazy tool - so attributes names are not validated
-		this.name = inputName;
-		this.value = inputValue;
+		this.name = name;
+		this.value = value;
 	}
 	
 	/**
@@ -31,7 +31,8 @@ public class XMLAttribute {
 	 */
 	public String toXMLString() {
 		String xmlValue = StringUtil.escapeXml( this.value );
-		return this.name + "\"" + xmlValue + "\"";
+		String xmlName = StringUtil.escapeXml( this.name );
+		return xmlName + "=\"" + xmlValue + "\"";
 	}
 	
 }

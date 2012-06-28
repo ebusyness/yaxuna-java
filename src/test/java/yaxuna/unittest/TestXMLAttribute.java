@@ -4,7 +4,6 @@
 package yaxuna.unittest;
 
 import static org.junit.Assert.*;
-import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,7 +13,7 @@ import yaxuna.XMLAttribute;
 
 /**
  * @author Samuel
- *
+ * 
  */
 public class TestXMLAttribute {
 
@@ -37,11 +36,10 @@ public class TestXMLAttribute {
 	 */
 	@Test
 	public final void testXMLAttribute() {
-		XMLAttribute attribute = new XMLAttribute( "name" , "myName" );
+		XMLAttribute attribute = new XMLAttribute("name", "myName");
 		// the basic test
-		assertEquals( attribute.name, "name" );
-		
-		assertEquals( attribute.value, "myName" );
+		assertEquals(attribute.name, "name");
+		assertEquals(attribute.value, "myName");
 	}
 
 	/**
@@ -50,29 +48,27 @@ public class TestXMLAttribute {
 	@Test
 	public final void testToXMLString() {
 
-		XMLAttribute attribute = new XMLAttribute( "name" , "myName" );
+		XMLAttribute attribute = new XMLAttribute("name", "myName");
 		// the basic test
-		assertEquals( attribute.toXMLString() , "name=\"myName\"" );
+		assertEquals(attribute.toXMLString(), "name=\"myName\"");
 
 		// test xml encoding of value
-		attribute.value="<div>";
-		assertEquals( attribute.toXMLString() , "name=\"&lt;div&gt;\"" );
+		attribute.value = "<div>";
+		assertEquals(attribute.toXMLString(), "name=\"&lt;div&gt;\"");
 
-		attribute.value="&'\"";
-		assertEquals( attribute.toXMLString() , "name=\"&amp;&apos;&quot;\"" );
-		
-		attribute.value="&amp;&apos;&quot;";
+		attribute.value = "&'\"";
+		assertEquals(attribute.toXMLString(), "name=\"&amp;&apos;&quot;\"");
 
-		assertEquals( attribute.toXMLString() , "name=\"&amp;amp;&amp;apos;&amp;quot;\"" );		
+		attribute.value = "&amp;&apos;&quot;";
+		assertEquals(attribute.toXMLString(), "name=\"&amp;amp;&amp;apos;&amp;quot;\"");
 
 		// test xml encoding of name
-		attribute.value="- empty -";
-		attribute.name="<div>";
-//		fail("todo - thats not finished");
-		// assertEquals( attribute.toXMLString() , "&lt;div&gt;=\"- empty -" );
-		
+		attribute.value = "- empty -";
+		attribute.name = "<div>";
+		assertEquals(attribute.toXMLString(), "&lt;div&gt;=\"- empty -\"");
+		attribute.name = "&'\"";
+		assertEquals(attribute.toXMLString(), "&amp;&apos;&quot;=\"- empty -\"");
 		// System.out.print( attribute.toXMLString() );
 	}
 
 }
-
